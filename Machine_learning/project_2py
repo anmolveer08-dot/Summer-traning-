@@ -1,0 +1,94 @@
+                    #================-----LOGISTIC MODEL ----==================#
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+from sklearn.preprocessing import LabelEncoder
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+df=pd.read_csv('DATASET/spam.csv', encoding='latin1')
+print(df)
+
+df.info()
+print(df.shape)
+
+print(df.duplicated().sum())
+print(df.isnull().sum())
+
+
+print(df.tail())
+print(df.head())
+
+df.drop(columns=['Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4'], inplace=True)
+print(df)
+
+
+# ====== DATA VISUALIZATION =======
+
+sns.countplot(x='v1', data=df)
+
+plt.title('Spam vs Ham Messages')
+plt.xlabel('Message Type')
+plt.ylabel('Count')
+
+plt.show()
+
+
+
+# ==========SPLITING OF X & Y FROM THEE DATASET
+
+X=df['v2']
+y=df['v1']
+
+
+# # Features
+# X = df['v2']
+
+# Text -> Numbers
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(X)
+
+# Target
+encoder = LabelEncoder()
+y = encoder.fit_transform(df['v1'])
+
+# Split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.2,
+    random_state=33
+)
+
+# Model
+model = LogisticRegression()
+
+# Train
+model.fit(X_train, y_train)
+
+# Predict
+y_pred = model.predict(X_test)
+
+# Accuracy
+print("Accuracy:", accuracy_score(y_test, y_pred))
+
+
+# Message Length Distribution
+
+df['length'] = df['v2'].apply(len)
+
+sns.histplot(df['length'], bins=30)
+plt.title('Message Length Distribution')
+plt.show()
+
+
+
+
+
+
+
