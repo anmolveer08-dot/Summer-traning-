@@ -47,9 +47,6 @@ X=df['v2']
 y=df['v1']
 
 
-# # Features
-# X = df['v2']
-
 # Text -> Numbers
 vectorizer = TfidfVectorizer()
 X = vectorizer.fit_transform(X)
